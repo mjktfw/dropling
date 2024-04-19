@@ -1,0 +1,8 @@
+#!/bin/bash
+
+. ./app/config/app.conf
+
+rm -rf "${PROFILE_DIR}/${APP_NAME}.sh"
+
+rm -rf "${BIN_DIR}/${APP_PREFIX}"*
+rm -rf "${CONFIG_DIR}/${APP_NAME}"

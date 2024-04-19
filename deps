@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DEPS_DIR="${PWD}/deps.d"
+
+[ -f "${HOME}/.profiledir" ] ||
+  "${DEPS_DIR}/install-profiledir"
+
+type -p ssh-keygen >/dev/null ||
+  "${DEPS_DIR}/install-ssh"
+
+type -p gh >/dev/null ||
+  "${DEPS_DIR}/install-gh"

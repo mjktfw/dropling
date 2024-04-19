@@ -1,0 +1,10 @@
+#!/bin/bash
+
+CONFIG_DIR="./app/config"
+
+# Copy default config files
+for file in "${CONFIG_DIR}/"*.conf.default; do
+    [ ! -f "${file%.conf}" ] && cp "${file}" "${file%.conf}"
+done
+
+exit 0

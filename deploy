@@ -1,5 +1,5 @@
 #!/bin/bash
-DEPLOY_DIR="${PWD}/dropling"
+DEPLOY_DIR="${PWD}/drop"
 
 "${DEPLOY_DIR}/unlink"
 

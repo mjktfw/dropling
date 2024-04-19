@@ -1,0 +1,9 @@
+#!/bin/bash
+DEPLOY_DIR="${PWD}/dropling"
+
+"${DEPLOY_DIR}/unlink"
+
+"${DEPLOY_DIR}/ungit"
+"${DEPLOY_DIR}/prep"
+"${DEPLOY_DIR}/deps"
+"${DEPLOY_DIR}/link"

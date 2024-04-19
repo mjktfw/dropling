@@ -1,0 +1,15 @@
+#!/bin/bash
+hook_path="./.git/hooks/post-merge"
+
+case "$1" in
+  ""|up|on)
+    ln -sf ../../install "${hook_path}"
+    ;;
+  down|off)
+    rm -rf "${hook_path:?}"
+    ;;
+  *)
+    echo "Valid arguments are: <NULL>/up/on, down/off."
+    exit 1
+    ;;
+esac

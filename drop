@@ -66,12 +66,32 @@ function opt::call_cmd() {
 # functions
 ################################################################################
 
-function lib::hook() {
-  case "$1" in
-    "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
-    down | off ) rm -rf "${HOOK_PATH:?}" ;;
-    * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
-  esac
+function lib::setup-profiledir() {
+  # TODO: hardcoded path of home directory
+
+  [ -f "${HOME}/.profiledir" ] && return 0
+
+  LINEHASH="a7e9f1d3b4c8f2e0"
+  LINE='[ -f "${HOME}/.profiledir" ] && . "${HOME}/.profiledir"'
+  LINECMBN="\n${LINE} # ${LINEHASH}"
+  FILE="${HOME}/.profile"
+
+  grep -qF -- "${LINEHASH}" "${FILE}" || echo -e "${LINECMBN}" >> "${FILE}"
+  cp -f "./drop/.profiledir" "${HOME}/.profiledir"
+}
+
+function lib::deps() {
+
+  DEPS_DIR="${PWD}/deps.d"
+
+  for script in "${DEPS_DIR}"/*; do
+    [ -x "$script" ] && "$script"
+  done
+
+}
+
+function lib::ungit() {
+  cp -R ./raw/. ./app
 }
 
 function lib::prep() {
@@ -117,37 +137,19 @@ function lib::unlink() {
   rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
 }
 
-function lib::setup-profiledir() {
-  # TODO: hardcoded path of home directory
-
-  [ -f "${HOME}/.profiledir" ] && return 0
-
-  LINEHASH="a7e9f1d3b4c8f2e0"
-  LINE='[ -f "${HOME}/.profiledir" ] && . "${HOME}/.profiledir"'
-  LINECMBN="\n${LINE} # ${LINEHASH}"
-  FILE="${HOME}/.profile"
-
-  grep -qF -- "${LINEHASH}" "${FILE}" || echo -e "${LINECMBN}" >> "${FILE}"
-  cp -f "./drop/.profiledir" "${HOME}/.profiledir"
+function lib::hook() {
+  case "$1" in
+    "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
+    down | off ) rm -rf "${HOOK_PATH:?}" ;;
+    * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
+  esac
 }
 
-function lib::ungit() {
-  cp -R ./raw/. ./app
-}
-
-function lib::deps() {
-
-  DEPS_DIR="${PWD}/deps.d"
-
-  for script in "${DEPS_DIR}"/*; do
-    [ -x "$script" ] && "$script"
-  done
-
-}
 function lib::install() {
 
   lib::unlink
 
+  lib::setup-profiledir
   lib::deps
   lib::ungit
   lib::prep

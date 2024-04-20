@@ -10,6 +10,30 @@ HOOK_PATH="./.git/hooks/post-merge"
 # helper functions
 ################################################################################
 
+function err::cmd_null_raw() {
+  echo >&2 "$1: Missing command"
+  exit 1
+}
+
+function err::cmd_null() {
+  if [[ "${#ARGS[@]}" == 0 ]] ; then
+    err::cmd_null_raw "${FUNCNAME[2]}"
+  fi
+}
+
+function err::cmd_undef_raw () {
+  echo >&2 "$1: Undefined command: '$2'"
+  exit 1
+}
+
+function err::cmd_undef () {
+  err::cmd_undef_raw "${FUNCNAME[2]}" "$1"
+}
+
+function err::opt () {
+  err::opt_raw "${FUNCNAME[2]}" "${ARGS[0]}"
+}
+
 function opt::set () {
   declare opt_name="$1"
   declare opt_string="${ARGS[0]}"

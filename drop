@@ -148,6 +148,10 @@ function lib::install() {
   lib::link
 }
 
+function lib::uninstall() {
+  lib::unlink
+}
+
 function lib::hook() {
   case "$1" in
     "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
@@ -156,12 +160,11 @@ function lib::hook() {
   esac
 }
 
-
 function main() (
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented subcommands
-  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install hook"
+  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install uninstall hook"
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented options

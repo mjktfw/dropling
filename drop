@@ -80,6 +80,10 @@ function opt::call_cmd() {
   declare cmds="$(echo $X_CMDS | tr -s [:blank:] '|')"
   declare cmds="@(${cmds})"
 
+  echo "ARGS: ${ARGS[@]}"
+  echo "X_CMDS: $X_CMDS"
+  echo "cmds: $cmds"
+
   case "${ARGS[0]}" in
     $cmds ) "${call_fun}" "${ARGS[@]:1}" ;;
     * ) err::cmd_undef "${ARGS[0]}" ;;
@@ -145,7 +149,7 @@ function lib::link() {
     mkdir -p "${CONFIG_DIR}/${APP_NAME}"
 
   for path in "${PWD}/app/config"/*.conf; do
-    filename=$(basename "${path}")
+    declare filename=$(basename "${path}")
     ln -sf "${path}" "${CONFIG_DIR}/${APP_NAME}/${filename}"
   done
 }

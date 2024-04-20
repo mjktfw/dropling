@@ -137,14 +137,6 @@ function lib::unlink() {
   rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
 }
 
-function lib::hook() {
-  case "$1" in
-    "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
-    down | off ) rm -rf "${HOOK_PATH:?}" ;;
-    * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
-  esac
-}
-
 function lib::install() {
 
   lib::unlink
@@ -156,11 +148,20 @@ function lib::install() {
   lib::link
 }
 
+function lib::hook() {
+  case "$1" in
+    "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
+    down | off ) rm -rf "${HOOK_PATH:?}" ;;
+    * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
+  esac
+}
+
+
 function main() (
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented subcommands
-  declare -r X_CMDS="hook install unlink prep ungit setup-profiledir"
+  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install hook"
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented options

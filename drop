@@ -1,0 +1,175 @@
+#!/bin/bash
+
+################################################################################
+# environment
+################################################################################
+
+HOOK_PATH="./.git/hooks/post-merge"
+
+################################################################################
+# helper functions
+################################################################################
+
+function opt::set () {
+  declare opt_name="$1"
+  declare opt_string="${ARGS[0]}"
+
+  OPTS[$opt_name]="1"
+  ARGS=("${ARGS[@]:1}")
+}
+
+function opt::set2 () {
+  declare opt_name="$1"
+  declare opt_string="${ARGS[0]}"
+  declare opt_val="${ARGS[1]?$(err::empty_val2 $opt_string)}"
+
+  OPTS["${opt_name}"]="${opt_val}"
+  ARGS=("${ARGS[@]:2}")
+}
+
+function opt::get_from_env () {
+  declare optnames=($X_OPTS)
+
+  if [[ ${#optnames[@]} -gt 0 ]] ; then
+    for optname in ${optnames[@]} ; do
+      : "${OPTS["${optname}"]:="${!optname:-""}"}"
+    done
+  fi
+
+}
+
+function opt::call_cmd() {
+
+  if [[ "${#X_CMDS}" == 0 ]] ; then
+    #TODO: return error if any subcommand is supplied
+    return 0
+  fi
+
+  err::cmd_null
+
+  if [[ "${FUNCNAME[1]}" == "main" ]] ; then
+    declare call_fun="lib::${ARGS[0]}"
+  else
+    declare call_fun="${FUNCNAME[1]}_${ARGS[0]}"
+  fi
+
+  declare cmds="$(echo $X_CMDS | tr -s [:blank:] '|')"
+  declare cmds="@(${cmds})"
+
+  case "${ARGS[0]}" in
+    $cmds ) "${call_fun}" "${ARGS[@]:1}" ;;
+    * ) err::cmd_undef "${ARGS[0]}" ;;
+  esac
+}
+
+################################################################################
+# functions
+################################################################################
+
+function lib::hook() {
+  case "$1" in
+    "" | up | on ) ln -sf ../../drop-hook "${HOOK_PATH}" ;;
+    down | off ) rm -rf "${HOOK_PATH:?}" ;;
+    * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
+  esac
+}
+
+lib::prep() {
+  CONFIG_DIR="./app/config"
+
+  # Copy default config files
+  for file in "${CONFIG_DIR}/"*.conf.default; do
+      [ ! -f "${file%.conf}" ] && cp "${file}" "${file%.conf}"
+  done
+
+  exit 0
+
+}
+
+lib::link() {
+  . ./app/config/app.conf
+
+  [ -d "${PROFILE_DIR}" ] ||
+    mkdir -p "${PROFILE_DIR}"
+  ln -sf "${PWD}/app/profile" "${PROFILE_DIR}/${APP_NAME}.sh"
+
+  [ -d "${BIN_DIR}" ] ||
+    mkdir -p "${BIN_DIR}"
+  ln -sf "${PWD}/app/bin/${APP_PREFIX}" "${BIN_DIR}/"
+
+  [ -d "${CONFIG_DIR}/${APP_NAME}" ] ||
+    mkdir -p "${CONFIG_DIR}/${APP_NAME}"
+
+  for path in "${PWD}/app/config"/*.conf; do
+    filename=$(basename "${path}")
+    ln -sf "${path}" "${CONFIG_DIR}/${APP_NAME}/${filename}"
+  done
+}
+
+lib::unlink() {
+  [ -d "./app" ] || exit 0
+
+  . ./app/config/app.conf
+
+  rm -rf "${PROFILE_DIR:?}/${APP_NAME}.sh"
+
+  rm -rf "${BIN_DIR:?}/${APP_PREFIX}"*
+  rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
+}
+
+lib::setup-profiledir() {
+  # TODO: hardcoded path of home directory
+
+  LINEHASH="a7e9f1d3b4c8f2e0"
+  LINE='[ -f "${HOME}/.profiledir" ] && . "${HOME}/.profiledir"'
+  LINECMBN="\n${LINE} # ${LINEHASH}"
+  FILE="${HOME}/.profile"
+
+  grep -qF -- "${LINEHASH}" "${FILE}" || echo -e "${LINECMBN}" >> "${FILE}"
+  cp -f "./drop/.profiledir" "${HOME}/.profiledir"
+}
+
+lib::ungit() {
+  cp -R ./raw/. ./app
+}
+
+function lib::install() {
+
+  lib::unlink
+
+  lib::ungit
+  lib::prep
+  lib::deps
+  lib::link
+}
+
+function main() (
+
+  #-----------------------------------------------------------------------------
+  # (EDIT) Implemented subcommands
+  declare -r X_CMDS="hook install unlink prep ungit setup-profiledir"
+
+  #-----------------------------------------------------------------------------
+  # (EDIT) Implemented options
+  declare -r X_OPTS=""
+  function opt::parse_args() {
+    while [[ "${#ARGS[@]}" -gt 0 ]]; do case "${ARGS[0]}" in
+        -- ) break ;; -* ) err::opt ;; * )  break ;;
+      esac done
+  }
+
+  #-----------------------------------------------------------------------------
+  # Parse arguments
+  declare ARGS=("$@")
+  declare -A OPTS
+  opt::parse_args; opt::get_from_env
+
+  #-----------------------------------------------------------------------------
+  # (EDIT) body
+
+  #-----------------------------------------------------------------------------
+  # Call subcommand
+  opt::call_cmd
+)
+
+main "$@"

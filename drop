@@ -164,7 +164,8 @@ function main() (
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented subcommands
-  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install uninstall hook"
+  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install uninstall \
+    hook"
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented options

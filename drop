@@ -120,6 +120,8 @@ function lib::unlink() {
 function lib::setup-profiledir() {
   # TODO: hardcoded path of home directory
 
+  [ -f "${HOME}/.profiledir" ] && return 0
+
   LINEHASH="a7e9f1d3b4c8f2e0"
   LINE='[ -f "${HOME}/.profiledir" ] && . "${HOME}/.profiledir"'
   LINECMBN="\n${LINE} # ${LINEHASH}"
@@ -133,13 +135,22 @@ function lib::ungit() {
   cp -R ./raw/. ./app
 }
 
+function lib::deps() {
+
+  DEPS_DIR="${PWD}/deps.d"
+
+  for script in "${DEPS_DIR}"/*; do
+    [ -x "$script" ] && "$script"
+  done
+
+}
 function lib::install() {
 
   lib::unlink
 
+  lib::deps
   lib::ungit
   lib::prep
-  lib::deps
   lib::link
 }
 

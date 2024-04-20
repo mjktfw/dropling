@@ -103,7 +103,7 @@ function opt::call_cmd() {
 # functions
 ################################################################################
 
-function lib:profiledir() {
+function lib::profiledir() {
   # TODO: hardcoded path of home directory
 
   [ -f "${HOME}/.profiledir" ] && return 0

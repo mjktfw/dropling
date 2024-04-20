@@ -1,6 +1,19 @@
 #!/bin/bash
 
 ################################################################################
+# bash settings
+################################################################################
+
+set -T # inherit DEBUG and RETURN trap for functions
+set -C # prevent file overwrite by > &> <>
+set -E # inherit -e
+set -e # exit immediately on errors
+set -u # exit on not assigned variables
+set -o pipefail # exit on pipe failure
+
+shopt -s extglob # enable extended pattern matching operators
+
+################################################################################
 # environment
 ################################################################################
 
@@ -80,6 +93,7 @@ function opt::call_cmd() {
   declare cmds="$(echo $X_CMDS | tr -s [:blank:] '|')"
   declare cmds="@(${cmds})"
 
+  echo "ARGS0: ${ARGS[0]}"
   echo "ARGS: ${ARGS[@]}"
   echo "X_CMDS: $X_CMDS"
   echo "cmds: $cmds"
@@ -192,7 +206,7 @@ function main() (
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented subcommands
-  declare -r X_CMDS="profiledir deps ungit prep unlink install uninstall hook"
+  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install uninstall hook"
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented options

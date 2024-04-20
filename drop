@@ -68,13 +68,13 @@ function opt::call_cmd() {
 
 function lib::hook() {
   case "$1" in
-    "" | up | on ) ln -sf ../../drop-hook "${HOOK_PATH}" ;;
+    "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
     down | off ) rm -rf "${HOOK_PATH:?}" ;;
     * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
   esac
 }
 
-lib::prep() {
+function lib::prep() {
   CONFIG_DIR="./app/config"
 
   # Copy default config files
@@ -86,7 +86,7 @@ lib::prep() {
 
 }
 
-lib::link() {
+function lib::link() {
   . ./app/config/app.conf
 
   [ -d "${PROFILE_DIR}" ] ||
@@ -106,7 +106,7 @@ lib::link() {
   done
 }
 
-lib::unlink() {
+function lib::unlink() {
   [ -d "./app" ] || exit 0
 
   . ./app/config/app.conf
@@ -117,7 +117,7 @@ lib::unlink() {
   rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
 }
 
-lib::setup-profiledir() {
+function lib::setup-profiledir() {
   # TODO: hardcoded path of home directory
 
   LINEHASH="a7e9f1d3b4c8f2e0"
@@ -129,7 +129,7 @@ lib::setup-profiledir() {
   cp -f "./drop/.profiledir" "${HOME}/.profiledir"
 }
 
-lib::ungit() {
+function lib::ungit() {
   cp -R ./raw/. ./app
 }
 

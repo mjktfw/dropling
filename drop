@@ -94,7 +94,7 @@ function opt::call_cmd() {
 # functions
 ################################################################################
 
-function lib::setup-profiledir() {
+function lib:profiledir() {
   # TODO: hardcoded path of home directory
 
   [ -f "${HOME}/.profiledir" ] && return 0
@@ -192,7 +192,7 @@ function main() (
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented subcommands
-  declare -r X_CMDS="setup-profiledir deps ungit prep unlink install uninstall hook"
+  declare -r X_CMDS="profiledir deps ungit prep unlink install uninstall hook"
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented options

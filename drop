@@ -119,7 +119,7 @@ function lib::profiledir() (
   return 0
 )
 
-function lib::deps() ()
+function lib::deps() (
 
   DEPS_DIR="${PWD}/deps.d"
 

@@ -133,29 +133,15 @@ function lib::ungit() {
 
 function lib::prep() {
   APP_CONFIG_DIR="./app/config"
-  echo "APP_CONFIG_DIR: ${APP_CONFIG_DIR}"
 
   # Copy default config files
   for file in "${APP_CONFIG_DIR}/"*.conf.default; do
-    echo "FILE: ${file}"
-    echo
       [ ! -f "${file%.default}" ] && cp "${file}" "${file%.default}"
-    echo "Loop iteration done"
   done
-
-  echo "Loop done"
-
 }
 
 function lib::link() {
-  echo "TEST"
-
   . ./app/config/app.conf
-
-  echo "PROFILE_DIR: ${PROFILE_DIR}"
-  echo "PROFILE_DIR: ${PROFILE_DIR}"
-  echo "PROFILE_DIR: ${PROFILE_DIR}"
-  echo "PWD: ${PWD}"
 
   [ -d "${PROFILE_DIR}" ] ||
     mkdir -p "${PROFILE_DIR}"
@@ -187,19 +173,12 @@ function lib::unlink() {
 
 function lib::install() {
 
-  echo "Installing..."
-
   lib::unlink
 
-  echo "Setting profiledir..."
   lib::profiledir
-  echo "Installing dependencies..."
   lib::deps
-  echo "Ungitting..."
   lib::ungit
-  echo "Preparing..."
   lib::prep
-  echo "Linking..."
   lib::link
 }
 

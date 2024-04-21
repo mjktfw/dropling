@@ -160,7 +160,7 @@ function lib::link() {
   done
 }
 
-function lib::unlink() {
+function lib::unlink() (
   [ -d "./app" ] || return 0
 
   . ./app/config/app.conf
@@ -169,16 +169,17 @@ function lib::unlink() {
 
   rm -rf "${BIN_DIR:?}/${APP_PREFIX}"*
   rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
-}
+)
 
 function lib::install() {
 
   lib::unlink
-
+  echo  "Unlinking done"
   lib::profiledir
   lib::deps
   lib::ungit
   lib::prep
+  echo "Preparation done"
   lib::link
 }
 

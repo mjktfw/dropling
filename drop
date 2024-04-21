@@ -168,7 +168,7 @@ function lib::link() {
 }
 
 function lib::unlink() {
-  [ -d "./app" ] || exit 0
+  [ -d "./app" ] || return 0
 
   . ./app/config/app.conf
 

@@ -144,6 +144,8 @@ function lib::prep() {
 }
 
 function lib::link() {
+  echo "TEST"
+
   . ./app/config/app.conf
 
   echo "PROFILE_DIR: ${PROFILE_DIR}"

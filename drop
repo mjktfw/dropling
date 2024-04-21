@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TODO: ungit+prep before install to customize target location in app.conf
+# TODO: allow for custom install scripts in app
+# TODO: allow for seperate dependecies in app and in "drop"
+
 ################################################################################
 # bash settings
 ################################################################################

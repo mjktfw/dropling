@@ -176,12 +176,19 @@ function lib::unlink() {
 
 function lib::install() {
 
+  echo "Installing..."
+
   lib::unlink
 
+  echo "Setting profiledir..."
   lib::profiledir
+  echo "Installing dependencies..."
   lib::deps
+  echo "Ungitting..."
   lib::ungit
+  echo "Preparing..."
   lib::prep
+  echo "Linking..."
   lib::link
 }
 

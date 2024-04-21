@@ -138,7 +138,8 @@ function lib::prep() {
   # Copy default config files
   for file in "${APP_CONFIG_DIR}/"*.conf.default; do
     echo "FILE: ${file}"
-      [ ! -f "${file%.conf}" ] && cp "${file}" "${file%.conf}"
+    echo
+      [ ! -f "${file%.default}" ] && cp "${file}" "${file%.default}"
     echo "Loop iteration done"
   done
 

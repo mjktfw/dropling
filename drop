@@ -165,6 +165,8 @@ function lib::link() (
     declare filename=$(basename "${path}")
     ln -sf "${path}" "${CONFIG_DIR}/${APP_NAME}/${filename}"
   done
+
+  return 0
 )
 
 function lib::unlink() (
@@ -176,17 +178,17 @@ function lib::unlink() (
 
   rm -rf "${BIN_DIR:?}/${APP_PREFIX}"*
   rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
+
+  return 0
 )
 
 function lib::install() (
 
   lib::unlink
-  echo  "Unlinking done"
+
   lib::profiledir
-  echo
   lib::ungit
   lib::prep
-  echo "Preparation done"
   lib::link
 )
 
@@ -200,6 +202,8 @@ function lib::hook() (
     down | off ) rm -rf "${HOOK_PATH:?}" ;;
     * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
   esac
+
+  return 0
 )
 
 function main() (
@@ -229,6 +233,8 @@ function main() (
   #-----------------------------------------------------------------------------
   # Call subcommand
   opt::call_cmd
+
+  return 0
 )
 
 main "$@"

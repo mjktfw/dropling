@@ -103,7 +103,7 @@ function opt::call_cmd() {
 # functions
 ################################################################################
 
-function lib::profiledir() {
+function lib::profiledir() (
   # TODO: hardcoded path of home directory
 
   [ -f "${HOME}/.profiledir" ] && return 0
@@ -115,9 +115,11 @@ function lib::profiledir() {
 
   grep -qF -- "${LINEHASH}" "${FILE}" || echo -e "${LINECMBN}" >> "${FILE}"
   cp -f "./drop/.profiledir" "${HOME}/.profiledir"
-}
 
-function lib::deps() {
+  return 0
+)
+
+function lib::deps() ()
 
   DEPS_DIR="${PWD}/deps.d"
 
@@ -125,22 +127,27 @@ function lib::deps() {
     [ -x "$script" ] && "$script"
   done
 
-}
+  return 0
+)
 
-function lib::ungit() {
+function lib::ungit() (
   cp -R ./raw/. ./app
-}
 
-function lib::prep() {
+  return 0
+)
+
+function lib::prep() (
   APP_CONFIG_DIR="./app/config"
 
   # Copy default config files
   for file in "${APP_CONFIG_DIR}/"*.conf.default; do
       [ ! -f "${file%.default}" ] && cp "${file}" "${file%.default}"
   done
-}
 
-function lib::link() {
+  return 0
+)
+
+function lib::link() (
   . ./app/config/app.conf
 
   [ -d "${PROFILE_DIR}" ] ||
@@ -158,7 +165,7 @@ function lib::link() {
     declare filename=$(basename "${path}")
     ln -sf "${path}" "${CONFIG_DIR}/${APP_NAME}/${filename}"
   done
-}
+)
 
 function lib::unlink() (
   [ -d "./app" ] || return 0
@@ -171,29 +178,29 @@ function lib::unlink() (
   rm -rf "${CONFIG_DIR:?}/${APP_NAME}"
 )
 
-function lib::install() {
+function lib::install() (
 
   lib::unlink
   echo  "Unlinking done"
   lib::profiledir
-  lib::deps
+  echo
   lib::ungit
   lib::prep
   echo "Preparation done"
   lib::link
-}
+)
 
 function lib::uninstall() {
   lib::unlink
 }
 
-function lib::hook() {
+function lib::hook() (
   case "$1" in
     "" | up | on ) ln -sf ../../drop/drop-hook "${HOOK_PATH}" ;;
     down | off ) rm -rf "${HOOK_PATH:?}" ;;
     * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
   esac
-}
+)
 
 function main() (
 

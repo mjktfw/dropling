@@ -146,6 +146,11 @@ function lib::prep() {
 function lib::link() {
   . ./app/config/app.conf
 
+  echo "PROFILE_DIR: ${PROFILE_DIR}"
+  echo "PROFILE_DIR: ${PROFILE_DIR}"
+  echo "PROFILE_DIR: ${PROFILE_DIR}"
+  echo "PWD: ${PWD}"
+
   [ -d "${PROFILE_DIR}" ] ||
     mkdir -p "${PROFILE_DIR}"
   ln -sf "${PWD}/app/profile" "${PROFILE_DIR}/${APP_NAME}.sh"

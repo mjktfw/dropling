@@ -133,11 +133,17 @@ function lib::ungit() {
 
 function lib::prep() {
   APP_CONFIG_DIR="./app/config"
+  echo "APP_CONFIG_DIR: ${APP_CONFIG_DIR}"
 
   # Copy default config files
   for file in "${APP_CONFIG_DIR}/"*.conf.default; do
+    echo "FILE: ${file}"
       [ ! -f "${file%.conf}" ] && cp "${file}" "${file%.conf}"
+    echo "Loop iteration done"
   done
+
+  echo "Loop done"
+
 }
 
 function lib::link() {

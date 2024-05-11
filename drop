@@ -110,6 +110,8 @@ function opt::call_cmd() {
 function lib::ungit() (
   APP_CONFIG_DIR="./app/config"
 
+  git config --local submodule.recurse true
+
   cp -R ./raw/. ./app
 
   # Copy default config files
@@ -198,6 +200,9 @@ function lib::uninstall() {
 }
 
 function lib::hook() (
+
+  git config --local submodule.recurse true
+
   case "$1" in
     "" | up | on ) ln -sf ../../drop/.git-hook "${HOOK_PATH}" ;;
     down | off ) rm -rf "${HOOK_PATH:?}" ;;

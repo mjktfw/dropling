@@ -1,0 +1,4 @@
+- os:
+  - `~/.profile.d/*.sh` sourced to set env vars on shell launch
+  - follows 'XDG Base Directory Specification'
+- dependencies will be installed during the installation process

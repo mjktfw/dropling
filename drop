@@ -107,7 +107,20 @@ function opt::call_cmd() {
 # functions
 ################################################################################
 
-function lib::profiledir() (
+function lib::ungit() (
+  APP_CONFIG_DIR="./app/config"
+
+  cp -R ./raw/. ./app
+
+  # Copy default config files
+  for file in "${APP_CONFIG_DIR}/"*.conf.default; do
+      [ ! -f "${file%.default}" ] && cp "${file}" "${file%.default}"
+  done
+
+  return 0
+)
+
+function lib::setup-profiledir() (
   # TODO: hardcoded path of home directory
 
   [ -f "${HOME}/.profiledir" ] && return 0
@@ -129,23 +142,6 @@ function lib::deps() (
 
   for script in "${DEPS_DIR}"/*; do
     [ -x "$script" ] && "$script"
-  done
-
-  return 0
-)
-
-function lib::ungit() (
-  cp -R ./raw/. ./app
-
-  return 0
-)
-
-function lib::prep() (
-  APP_CONFIG_DIR="./app/config"
-
-  # Copy default config files
-  for file in "${APP_CONFIG_DIR}/"*.conf.default; do
-      [ ! -f "${file%.default}" ] && cp "${file}" "${file%.default}"
   done
 
   return 0
@@ -190,9 +186,10 @@ function lib::install() (
 
   lib::unlink
 
-  lib::profiledir
   lib::ungit
-  lib::prep
+
+  lib::install-deps
+  lib::setup-profiledir
   lib::link
 )
 

@@ -131,7 +131,7 @@ function lib::setup-profiledir() (
   FILE="${HOME}/.profile"
 
   grep -qF -- "${LINEHASH}" "${FILE}" || echo -e "${LINECMBN}" >> "${FILE}"
-  cp -f "./drop/.profiledir" "${HOME}/.profiledir"
+  cp -f "./drop.d/.profiledir" "${HOME}/.profiledir"
 
   return 0
 )
@@ -200,7 +200,7 @@ function lib::uninstall() {
 function lib::hook() (
 
   case "$1" in
-    "" | up | on ) ln -sf ../../drop/.git-hook "${HOOK_PATH}" ;;
+    "" | up | on ) ln -sf ../../drop.d/.git-hook "${HOOK_PATH}" ;;
     down | off ) rm -rf "${HOOK_PATH:?}" ;;
     * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
   esac

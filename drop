@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# TODO: ungit+prep before install to customize target location in app.conf
 # TODO: allow for custom install scripts in app
 # TODO: allow for seperate dependecies in app and in "drop"
 
@@ -21,6 +20,7 @@ shopt -s extglob # enable extended pattern matching operators
 # environment
 ################################################################################
 
+SUBMODULE_DIR="./drop"
 HOOK_PATH="./.git/hooks/post-merge"
 
 ################################################################################
@@ -107,7 +107,7 @@ function opt::call_cmd() {
 # functions
 ################################################################################
 
-function lib::ungit() (
+function lib::make() (
   APP_CONFIG_DIR="./app/config"
 
   cp -R ./raw/. ./app
@@ -131,7 +131,7 @@ function lib::setup-profiledir() (
   FILE="${HOME}/.profile"
 
   grep -qF -- "${LINEHASH}" "${FILE}" || echo -e "${LINECMBN}" >> "${FILE}"
-  cp -f "./drop/.profiledir" "${HOME}/.profiledir"
+  cp -f "${SUBMODULE_DIR}/.profiledir" "${HOME}/.profiledir"
 
   return 0
 )
@@ -186,7 +186,7 @@ function lib::install() (
 
   lib::unlink
 
-  lib::ungit
+  lib::make
 
   lib::install-deps
   lib::setup-profiledir
@@ -200,10 +200,18 @@ function lib::uninstall() {
 function lib::hook() (
 
   case "$1" in
-    "" | up | on ) ln -sf ../../drop/.git-hook "${HOOK_PATH}" ;;
+    "" | up | on ) ln -sf "../../${SUBMODULE_DIR}/.git-hook" "${HOOK_PATH}" ;;
     down | off ) rm -rf "${HOOK_PATH:?}" ;;
     * ) echo "Valid arguments are: <NULL>/up/on, down/off." && exit 1 ;;
   esac
+
+  return 0
+)
+
+function lib::quick() (
+
+  lib::install \
+    && lib::hook up
 
   return 0
 )
@@ -212,7 +220,7 @@ function main() (
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented subcommands
-  declare -r X_CMDS="profiledir deps ungit prep unlink install uninstall hook"
+  declare -r X_CMDS="profiledir deps make prep unlink install uninstall hook quick"
 
   #-----------------------------------------------------------------------------
   # (EDIT) Implemented options
